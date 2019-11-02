@@ -22,18 +22,6 @@ const fpsWorker = new FpsWorker();
 import TickWorker from './workers/Tick';
 const tickWorker = new TickWorker();
 
-function fpsFunction(event: MessageEvent) {
-  fps.innerHTML = 'FPS: ' + event.data;
-}
-
-function tickerFunction1(event: MessageEvent) {
-  ticker1.innerHTML = 'Ticker 1: ' + event.data;
-}
-
-function tickerFunction2(event: MessageEvent) {
-  ticker2.innerHTML = 'Ticker 2: ' + event.data;
-}
-
 async function main() {
   await Promise.all([mainCounter1(), mainCounter2(), mainFps(), mainTick()]);
 
@@ -43,11 +31,9 @@ main();
 
 function mainCounter1() {
   return new Promise(resolve => {
-    counterWorker1.postMessage({
-      delay: 1
-    });
+    counterWorker1.postMessage(1);
     counterWorker1.onmessage = event => {
-      tickerFunction1(event);
+      ticker1.innerHTML = 'Ticker 1: ' + event.data;
       resolve();
     };
   });
@@ -55,11 +41,9 @@ function mainCounter1() {
 
 function mainCounter2() {
   return new Promise(resolve => {
-    counterWorker2.postMessage({
-      delay: 1
-    });
+    counterWorker2.postMessage(1);
     counterWorker2.onmessage = event => {
-      tickerFunction2(event);
+      ticker2.innerHTML = 'Ticker 2: ' + event.data;
       resolve();
     };
   });
@@ -69,7 +53,7 @@ function mainFps() {
   return new Promise(resolve => {
     fpsWorker.postMessage(1);
     fpsWorker.onmessage = event => {
-      fpsFunction(event);
+      fps.innerHTML = 'FPS: ' + event.data;
       resolve();
     };
   });
@@ -78,6 +62,6 @@ function mainFps() {
 function mainTick() {
   return new Promise(resolve => {
     tickWorker.postMessage(1);
-    tickWorker.onmessage = event => resolve();
+    tickWorker.onmessage = () => resolve();
   });
 }
