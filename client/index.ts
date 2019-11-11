@@ -51,10 +51,13 @@ async function main() {
     mainMoveElements(scene)
   ]);
 
+  await Promise.all([mainDetectCollision(scene)]);
+
   await new Promise(resolve => {
     requestAnimationFrame(resolve);
     renderer.render(scene, camera);
   });
+
   main();
 }
 main();
