@@ -3,26 +3,24 @@ import * as THREE from 'three';
 import MoveElementsWorker from '../workers/move-elements';
 const moveElementsWorker = new MoveElementsWorker();
 
-export function mainMoveElements(scene: THREE.Scene) {
-  const elements = JSON.parse(sessionStorage.getItem('elements'));
-
+export function mainMoveElements(elements, scene: THREE.Scene) {
   return new Promise(resolve => {
-    if (Object.keys(elements).length) {
+    if (Object.keys(elements.enemies).length) {
       moveElementsWorker.postMessage(elements);
     } else {
-      resolve();
+      resolve(elements);
     }
 
     moveElementsWorker.onmessage = event => {
-      const newElements = event.data;
+      Object.assign(elements, event.data);
 
-      Object.keys(newElements).forEach(key => {
-        const element = newElements[key];
+      Object.keys(elements.enemies).forEach(key => {
+        const element = elements.enemies[key];
         const object = scene.getObjectById(Number(key));
 
         if (element.remove) {
           scene.remove(object);
-          delete newElements[key];
+          delete elements.enemies[key];
           return;
         }
 
@@ -30,8 +28,7 @@ export function mainMoveElements(scene: THREE.Scene) {
         object.position.y = element.y;
       });
 
-      sessionStorage.setItem('elements', JSON.stringify(newElements));
-      resolve();
+      resolve(elements);
     };
   });
 }

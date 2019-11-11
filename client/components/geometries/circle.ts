@@ -9,14 +9,15 @@ export function addCircle(scene: THREE.Scene, path: THREE.Vector2[]) {
   const cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 
-  const elements = JSON.parse(sessionStorage.getItem('elements'));
-  elements[cube.id] = {
-    path,
-    size,
-    currentPoint: 0,
-    speed: 2,
-    x: path[0].x,
-    y: path[0].y
+  return {
+    id: cube.id,
+    data: {
+      path,
+      size,
+      currentPoint: 0,
+      speed: 2,
+      x: path[0].x,
+      y: path[0].y
+    }
   };
-  sessionStorage.setItem('elements', JSON.stringify(elements));
 }

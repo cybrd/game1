@@ -5,8 +5,8 @@ const moveElementsWorker: Worker = self as any;
 moveElementsWorker.onmessage = event => {
   const elements = event.data;
 
-  Object.keys(elements).forEach(key => {
-    const element = elements[key];
+  Object.keys(elements.enemies).forEach(key => {
+    const element = elements.enemies[key];
 
     if (!element.path[element.currentPoint + 1]) {
       element.remove = true;

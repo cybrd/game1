@@ -3,21 +3,19 @@ import * as THREE from 'three';
 import DetectCollisionWorker from '../workers/detect-collision';
 const detectCollisionWorker = new DetectCollisionWorker();
 
-export function mainDetectCollision(scene: THREE.Scene) {
-  const elements = JSON.parse(sessionStorage.getItem('elements'));
-
+export function mainDetectCollision(elements, scene: THREE.Scene) {
   return new Promise(resolve => {
-    if (Object.keys(elements).length) {
+    if (Object.keys(elements.enemies).length) {
       detectCollisionWorker.postMessage(elements);
     } else {
-      resolve();
+      resolve(elements);
     }
 
     detectCollisionWorker.onmessage = event => {
-      const newElements = event.data;
+      Object.assign(elements, event.data);
 
-      Object.keys(newElements).forEach(key => {
-        const element = newElements[key];
+      Object.keys(elements.enemies).forEach(key => {
+        const element = elements.enemies[key];
         const object: any = scene.getObjectById(Number(key));
 
         if (element.collided) {
@@ -27,8 +25,7 @@ export function mainDetectCollision(scene: THREE.Scene) {
         }
       });
 
-      sessionStorage.setItem('elements', JSON.stringify(newElements));
-      resolve();
+      resolve(elements);
     };
   });
 }

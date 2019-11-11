@@ -39,19 +39,22 @@ points = points.concat(curve.getPoints(10));
 const geometry = new THREE.BufferGeometry().setFromPoints(points);
 const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
 
-// Create the final object to add to the scene
 var splineObject = new THREE.Line(geometry, material);
 scene.add(splineObject);
+
+const elements = {
+  enemies: {}
+};
 
 async function main() {
   await Promise.all([
     mainFps(),
     mainTick(),
-    spawner(scene, points),
-    mainMoveElements(scene)
+    spawner(elements, scene, points),
+    mainMoveElements(elements, scene)
   ]);
 
-  await Promise.all([mainDetectCollision(scene)]);
+  await Promise.all([mainDetectCollision(elements, scene)]);
 
   await new Promise(resolve => {
     requestAnimationFrame(resolve);

@@ -4,9 +4,10 @@ import { addCircle } from './geometries/circle';
 
 let spawnTick = 0;
 
-export function spawner(scene: THREE.Scene, points: THREE.Vector2[]) {
+export function spawner(elements, scene: THREE.Scene, points: THREE.Vector2[]) {
   if (spawnTick % 25 === 0) {
-    addCircle(scene, points);
+    const { id, data } = addCircle(scene, points);
+    elements.enemies[id] = data;
   }
   spawnTick++;
 }
