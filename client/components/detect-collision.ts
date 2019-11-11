@@ -21,7 +21,7 @@ export function mainDetectCollision(elements, scene: THREE.Scene) {
         if (element.collided) {
           object.material.color.setHex(0xff0000);
         } else {
-          object.material.color.setHex(0xffff00);
+          object.material.color.setHex(element.originalColor);
         }
       });
 

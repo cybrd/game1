@@ -21,6 +21,7 @@ detectCollisionWorker.onmessage = async event => {
         Math.pow(element.size + element2.size, 2)
       ) {
         element.collided = true;
+        return;
       }
     });
   });
