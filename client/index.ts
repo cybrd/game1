@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { fpsElement, mainFps } from './components/fps';
 import { mainTick } from './components/tick';
 import { mainMoveElements } from './components/move-elements';
@@ -10,15 +11,50 @@ const app = document.getElementById('app');
 app.appendChild(fpsElement);
 app.appendChild(renderer.domElement);
 
+let points = [];
+let curve = new THREE.SplineCurve([
+  new THREE.Vector2(-100, -100),
+  new THREE.Vector2(100, -100)
+]);
+points = points.concat(curve.getPoints(10));
+
+curve = new THREE.SplineCurve([
+  new THREE.Vector2(100, -100),
+  new THREE.Vector2(100, 100)
+]);
+points = points.concat(curve.getPoints(10));
+
+curve = new THREE.SplineCurve([
+  new THREE.Vector2(100, 100),
+  new THREE.Vector2(-100, 100)
+]);
+points = points.concat(curve.getPoints(10));
+
+curve = new THREE.SplineCurve([
+  new THREE.Vector2(-100, 100),
+  new THREE.Vector2(-100, -100)
+]);
+points = points.concat(curve.getPoints(10));
+
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+
+// Create the final object to add to the scene
+var splineObject = new THREE.Line(geometry, material);
+scene.add(splineObject);
+
 async function main() {
   await Promise.all([
     mainFps(),
     mainTick(),
-    spawner(scene),
+    spawner(scene, points),
     mainMoveElements(scene)
   ]);
 
-  renderer.render(scene, camera);
-  setTimeout(main, 1);
+  await new Promise(resolve => {
+    requestAnimationFrame(resolve);
+    renderer.render(scene, camera);
+  });
+  main();
 }
 main();

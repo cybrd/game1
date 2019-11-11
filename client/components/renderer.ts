@@ -10,6 +10,8 @@ export const camera = new THREE.OrthographicCamera(
   height / -2
 );
 camera.position.z = 1;
+// camera.zoom = 0.5;
+// camera.updateProjectionMatrix();
 
 export const renderer = new THREE.WebGLRenderer();
 renderer.setSize(800, 400);

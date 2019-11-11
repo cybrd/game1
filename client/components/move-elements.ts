@@ -7,14 +7,27 @@ export function mainMoveElements(scene: THREE.Scene) {
   const elements = JSON.parse(sessionStorage.getItem('elements'));
 
   return new Promise(resolve => {
-    moveElementsWorker.postMessage(elements);
+    if (Object.keys(elements).length) {
+      moveElementsWorker.postMessage(elements);
+    } else {
+      resolve();
+    }
+
     moveElementsWorker.onmessage = event => {
       const newElements = event.data;
 
       Object.keys(newElements).forEach(key => {
         const element = newElements[key];
         const object = scene.getObjectById(Number(key));
+
+        if (element.remove) {
+          scene.remove(object);
+          delete newElements[key];
+          return;
+        }
+
         object.position.x = element.x;
+        object.position.y = element.y;
       });
 
       sessionStorage.setItem('elements', JSON.stringify(newElements));
